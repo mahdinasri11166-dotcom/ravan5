@@ -50,7 +50,6 @@ object WellbeingOutcomeAssessments {
             },
             tags = "سلامت عمومی GHQ"
         ),
-        ,
 
         AssessmentDef(
             id = "WSAS",
@@ -146,7 +145,6 @@ object WellbeingOutcomeAssessments {
             },
             tags = "بالینی CGI شدت"
         ),
-        ,
 
         AssessmentDef(
             id = "UCLA8",
@@ -259,4 +257,3 @@ object WellbeingOutcomeAssessments {
         )
     )
 }
-
