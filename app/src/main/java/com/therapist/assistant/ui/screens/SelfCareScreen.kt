@@ -35,7 +35,7 @@ fun SelfCareScreen(viewModel: AppointmentViewModel, onBack: () -> Unit) {
     val weekSessions = remember(all) {
         all.filter {
             it.dateTimeMillis >= weekStart &&
-                it.dateTimeMillis < weekStart + TRIAL_DAYS * 24L * 60 * 60 * 1000 &&
+                it.dateTimeMillis < weekStart + 7 * 24L * 60 * 60 * 1000 &&  // 👈 TRIAL_DAYS با 7 جایگزین شد
                 it.status != AppointmentStatus.CANCELLED
         }.sortedBy { it.dateTimeMillis }
     }
