@@ -290,21 +290,25 @@ object MoreFreeAssessments {
         )
     )
 
-    fun facetSummary(id: String, answers: List<Int>): String = when (id) {
-        "PANAS20" -> {
-            if (answers.size < 20) return ""
-            // PA items approx even indices in our list: 0,2,4,6,8,11,13,15,16,17 - simplified first 10 vs second is wrong
-            // items order: mixed - use sum of positive-named vs negative by index groups
-            val paIdx = listOf(0, 2, 4, 8, 9, 11, 13, 15, 16, 17)
-            val naIdx = listOf(1, 3, 5, 6, 7, 10, 12, 14, 18, 19)
-            val pa = paIdx.sumOf { answers.getOrElse(it) { 0 } }
-            val na = naIdx.sumOf { answers.getOrElse(it) { 0 } }
-            "عاطفه مثبت=$pa عاطفه منفی=$na"
+    fun facetSummary(id: String, answers: List<Int>): String {
+        return when (id) {
+            "PANAS20" -> {
+                if (answers.size < 20) ""
+                else {
+                    val paIdx = listOf(0, 2, 4, 8, 9, 11, 13, 15, 16, 17)
+                    val naIdx = listOf(1, 3, 5, 6, 7, 10, 12, 14, 18, 19)
+                    val pa = paIdx.sumOf { answers.getOrElse(it) { 0 } }
+                    val na = naIdx.sumOf { answers.getOrElse(it) { 0 } }
+                    "عاطفه مثبت=$pa عاطفه منفی=$na"
+                }
+            }
+            "IESR22" -> {
+                if (answers.size < 22) ""
+                else {
+                    "مزاحمت≈${answers.subList(0, 8).sum()} اجتناب≈${answers.subList(8, 16).sum()} انگیختگی≈${answers.subList(16, 22).sum()}"
+                }
+            }
+            else -> ""
         }
-        "IESR22" -> {
-            if (answers.size < 22) return ""
-            "مزاحمت≈${answers.subList(0, 8).sum()} اجتناب≈${answers.subList(8, 16).sum()} انگیختگی≈${answers.subList(16, 22).sum()}"
-        }
-        else -> ""
     }
 }
