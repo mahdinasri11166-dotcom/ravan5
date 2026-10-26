@@ -43,6 +43,46 @@ object AssessmentCatalog {
         }
     }
 
+    // 👇 این تابع اضافه شد تا خطای AssessmentRunScreen رفع شود 👇
+    fun score(def: AssessmentDef, answers: List<Int>): Int {
+        return when (def.id) {
+            "RSES" -> {
+                val reverse = setOf(1, 4, 7, 8)
+                answers.mapIndexed { i, v -> if (i in reverse) 3 - v else v }.sum()
+            }
+            "PSS10" -> {
+                val reverse = setOf(3, 4, 6, 7)
+                answers.mapIndexed { i, v -> if (i in reverse) 4 - v else v }.sum()
+            }
+            "AQ10" -> {
+                val reverse = setOf(1, 2, 3, 4, 5, 8)
+                answers.mapIndexed { i, v ->
+                    if (i in reverse) (if (v == 0) 1 else 0) else v
+                }.sum()
+            }
+            "CORE10" -> {
+                val reverse = setOf(1, 2)
+                answers.mapIndexed { i, v -> if (i in reverse) 4 - v else v }.sum()
+            }
+            "GDS15" -> {
+                val reverse = setOf(0, 4, 6, 8, 13)
+                answers.mapIndexed { i, v ->
+                    if (i in reverse) (if (v == 0) 1 else 0) else v
+                }.sum()
+            }
+            "BIS15" -> {
+                val reverse = setOf(0, 4, 5)
+                answers.mapIndexed { i, v -> if (i in reverse) 5 - v else v }.sum()
+            }
+            "STAI6" -> {
+                val reverse = setOf(0, 2, 5)
+                answers.mapIndexed { i, v -> if (i in reverse) 5 - v else v }.sum()
+            }
+            else -> answers.sum()
+        }
+    }
+    // 👆 ----------------- 👆
+
     fun facetSummary(def: AssessmentDef, answers: List<Int>): String {
         return when (def.id) {
             "TIPI" -> {
