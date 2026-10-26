@@ -31,42 +31,48 @@ object WorkshopExcelExporter {
         val rows = mutableListOf<List<String>>()
 
         // ردیف عنوان (مثل نمونه)
-        rows += listOf("جدول مشخصات شرکت‌کنندگان آموزش $courseKind")
+        rows.add(listOf("جدول مشخصات شرکت‌کنندگان آموزش $courseKind"))
 
         // ردیف متا ۱ — استان | شهرستان | مرکز | مکان
-        rows += listOf(
-            "استان برگزارکننده",
-            w.province.ifBlank { "خوزستان" },
-            "شهرستان",
-            w.city.ifBlank { "اهواز" },
-            "مرکز مجری کارگاه",
-            w.centerName.ifBlank { "گل سرخ" },
-            "مکان برگزاری",
-            w.location.ifBlank { w.city.ifBlank { "اهواز" } }
+        rows.add(
+            listOf(
+                "استان برگزارکننده",
+                w.province.ifBlank { "خوزستان" },
+                "شهرستان",
+                w.city.ifBlank { "اهواز" },
+                "مرکز مجری کارگاه",
+                w.centerName.ifBlank { "گل سرخ" },
+                "مکان برگزاری",
+                w.location.ifBlank { w.city.ifBlank { "اهواز" } }
+            )
         )
 
         // ردیف متا ۲ — عنوان | مدت | سرفصل | آموزشگر
-        rows += listOf(
-            "عنوان دوره",
-            w.title.ifBlank { courseKind },
-            "مدت زمان کارگاه",
-            formatDuration(w.durationHours),
-            "سرفصل‌های آموزشی",
-            w.topics.ifBlank { w.title },
-            "نام آموزشگر",
-            w.trainerName
+        rows.add(
+            listOf(
+                "عنوان دوره",
+                w.title.ifBlank { courseKind },
+                "مدت زمان کارگاه",
+                formatDuration(w.durationHours),
+                "سرفصل‌های آموزشی",
+                w.topics.ifBlank { w.title },
+                "نام آموزشگر",
+                w.trainerName
+            )
         )
 
         // ردیف متا ۳ — تاریخ
-        rows += listOf(
-            "تاریخ و ساعت برگزاری",
-            JalaliDate.formatDateTime(w.dateMillis),
-            "تعداد شرکت‌کنندگان",
-            parts.size.toString(),
-            "", "", "", ""
+        rows.add(
+            listOf(
+                "تاریخ و ساعت برگزاری",
+                JalaliDate.formatDateTime(w.dateMillis),
+                "تعداد شرکت‌کنندگان",
+                parts.size.toString(),
+                "", "", "", ""
+            )
         )
 
-        rows += listOf() // فاصله خالی
+        rows.add(listOf()) // فاصله خالی
 
         // هدر جدول — دقیقاً ستون‌های نمونه مرجع (بدون ردیف اضافه)
         val header = listOf(
@@ -78,19 +84,21 @@ object WorkshopExcelExporter {
             "نمره پس آزمون",
             "شماره تماس"
         )
-        rows += header
+        rows.add(header)
         val headerRow = rows.size // 1-based
 
         // داده واقعی شرکت‌کنندگان
         parts.forEach { p ->
-            rows += listOf(
-                p.fullName,
-                p.birthDateText,
-                p.education,
-                p.nationalId,
-                p.preTestScore,
-                p.postTestScore,
-                p.phone
+            rows.add(
+                listOf(
+                    p.fullName,
+                    p.birthDateText,
+                    p.education,
+                    p.nationalId,
+                    p.preTestScore,
+                    p.postTestScore,
+                    p.phone
+                )
             )
         }
 
@@ -98,7 +106,7 @@ object WorkshopExcelExporter {
         val minRows = 10
         if (parts.size < minRows) {
             repeat(minRows - parts.size) {
-                rows += listOf("", "", "", "", "", "", "")
+                rows.add(listOf("", "", "", "", "", "", ""))
             }
         }
 
@@ -118,66 +126,74 @@ object WorkshopExcelExporter {
         val rows = mutableListOf<List<String>>()
 
         if (isFamily) {
-            rows += listOf("جدول گزارش کمی دوره‌های آموزش زندگی خانواده — شناسنامه فراگیران (مخاطب اصلی) دوره‌های آموزشی")
+            rows.add(listOf("جدول گزارش کمی دوره‌های آموزش زندگی خانواده — شناسنامه فراگیران (مخاطب اصلی) دوره‌های آموزشی"))
         } else {
-            rows += listOf("جدول گزارش کمی دوره‌های آموزشی پیش از ازدواج — شناسنامه فراگیران (مخاطب اصلی) دوره‌های آموزشی")
+            rows.add(listOf("جدول گزارش کمی دوره‌های آموزشی پیش از ازدواج — شناسنامه فراگیران (مخاطب اصلی) دوره‌های آموزشی"))
         }
 
-        rows += listOf(
-            "نام استان",
-            w.province.ifBlank { "خوزستان" },
-            "شهرستان",
-            w.city.ifBlank { "اهواز" },
-            "سال و ماه‌های اجرا",
-            JalaliDate.formatMonthYear(w.dateMillis),
-            "عنوان دوره",
-            w.title
+        rows.add(
+            listOf(
+                "نام استان",
+                w.province.ifBlank { "خوزستان" },
+                "شهرستان",
+                w.city.ifBlank { "اهواز" },
+                "سال و ماه‌های اجرا",
+                JalaliDate.formatMonthYear(w.dateMillis),
+                "عنوان دوره",
+                w.title
+            )
         )
-        rows += listOf()
+        rows.add(listOf())
 
         // —— تحصیلات ——
         val edu = countEducation(parts)
-        rows += listOf("وضعیت تحصیلات فراگیران")
-        rows += listOf("زیر دیپلم", "دیپلم", "لیسانس", "فوق لیسانس بالاتر", "جمع کل")
+        rows.add(listOf("وضعیت تحصیلات فراگیران"))
+        rows.add(listOf("زیر دیپلم", "دیپلم", "لیسانس", "فوق لیسانس بالاتر", "جمع کل"))
         val eduHeader = rows.size
-        rows += listOf(
-            edu.underDiploma.toString(),
-            edu.diploma.toString(),
-            edu.bachelor.toString(),
-            edu.masterPlus.toString(),
-            parts.size.toString()
+        rows.add(
+            listOf(
+                edu.underDiploma.toString(),
+                edu.diploma.toString(),
+                edu.bachelor.toString(),
+                edu.masterPlus.toString(),
+                parts.size.toString()
+            )
         )
-        rows += listOf()
+        rows.add(listOf())
 
         // —— سن ——
         val ages = parts.mapNotNull { approxAge(it.birthDateText) }
         if (isFamily) {
             // ساختار نمونه زندگی خانواده
-            rows += listOf("وضعیت سن فراگیران")
-            rows += listOf(
-                "۰–۵ سال (زن)", "۰–۵ سال (مرد)",
-                "۵ سال به بالا (زن)", "۵ سال به بالا (مرد)",
-                "جمع زنان", "جمع مردان", "جمع کل"
+            rows.add(listOf("وضعیت سن فراگیران"))
+            rows.add(
+                listOf(
+                    "۰–۵ سال (زن)", "۰–۵ سال (مرد)",
+                    "۵ سال به بالا (زن)", "۵ سال به بالا (مرد)",
+                    "جمع زنان", "جمع مردان", "جمع کل"
+                )
             )
             val ageHeader = rows.size
             val over5 = ages.count { it > 5 }
             val under5 = ages.count { it in 0..5 }
             val unk = parts.size - under5 - over5
             // جنسیت در مدل فعلی ثبت نمی‌شود → مردان در ستون مرد، زنان ۰ (قابل ویرایش دستی)
-            rows += listOf(
-                "0", under5.toString(),
-                "0", over5.toString(),
-                "0", (under5 + over5).toString(),
-                parts.size.toString()
+            rows.add(
+                listOf(
+                    "0", under5.toString(),
+                    "0", over5.toString(),
+                    "0", (under5 + over5).toString(),
+                    parts.size.toString()
+                )
             )
             if (unk > 0) {
-                rows += listOf("تعداد بدون تاریخ تولد معتبر", unk.toString())
+                rows.add(listOf("تعداد بدون تاریخ تولد معتبر", unk.toString()))
             }
-            rows += listOf()
-            rows += listOf("تعداد کارگاه برگزار شده")
-            rows += listOf("مرکز استان", "شهرستان", "جمع کل")
+            rows.add(listOf())
+            rows.add(listOf("تعداد کارگاه برگزار شده"))
+            rows.add(listOf("مرکز استان", "شهرستان", "جمع کل"))
             val wsHeader = rows.size
-            rows += listOf(w.province.ifBlank { "خوزستان" }, w.city.ifBlank { "اهواز" }, parts.size.toString())
+            rows.add(listOf(w.province.ifBlank { "خوزستان" }, w.city.ifBlank { "اهواز" }, parts.size.toString()))
 
             return XlsxWriter.Sheet(
                 name = "گزارش فراگیران",
@@ -187,13 +203,15 @@ object WorkshopExcelExporter {
             )
         } else {
             // ساختار نمونه پیش از ازدواج
-            rows += listOf("وضعیت سن فراگیران")
-            rows += listOf(
-                "۱۵–۱۹ زن", "۱۵–۱۹ مرد",
-                "۲۰–۲۴ زن", "۲۰–۲۴ مرد",
-                "۲۵–۲۹ زن", "۲۵–۲۹ مرد",
-                "۳۰ به بالا زن", "۳۰ به بالا مرد",
-                "جمع زنان", "جمع مردان"
+            rows.add(listOf("وضعیت سن فراگیران"))
+            rows.add(
+                listOf(
+                    "۱۵–۱۹ زن", "۱۵–۱۹ مرد",
+                    "۲۰–۲۴ زن", "۲۰–۲۴ مرد",
+                    "۲۵–۲۹ زن", "۲۵–۲۹ مرد",
+                    "۳۰ به بالا زن", "۳۰ به بالا مرد",
+                    "جمع زنان", "جمع مردان"
+                )
             )
             val ageHeader = rows.size
             val c15 = ages.count { it in 15..19 }
@@ -201,26 +219,28 @@ object WorkshopExcelExporter {
             val c25 = ages.count { it in 25..29 }
             val c30 = ages.count { it >= 30 }
             // بدون فیلد جنسیت → همه در ستون مرد
-            rows += listOf(
-                "0", c15.toString(),
-                "0", c20.toString(),
-                "0", c25.toString(),
-                "0", c30.toString(),
-                "0", (c15 + c20 + c25 + c30).toString()
+            rows.add(
+                listOf(
+                    "0", c15.toString(),
+                    "0", c20.toString(),
+                    "0", c25.toString(),
+                    "0", c30.toString(),
+                    "0", (c15 + c20 + c25 + c30).toString()
+                )
             )
-            rows += listOf()
-            rows += listOf("تعداد کارگاه برگزار شده")
-            rows += listOf("مرکز استان", "شهرستان", "جمع کل")
+            rows.add(listOf())
+            rows.add(listOf("تعداد کارگاه برگزار شده"))
+            rows.add(listOf("مرکز استان", "شهرستان", "جمع کل"))
             val wsHeader = rows.size
-            rows += listOf(w.province.ifBlank { "خوزستان" }, w.city.ifBlank { "اهواز" }, parts.size.toString())
-            rows += listOf()
+            rows.add(listOf(w.province.ifBlank { "خوزستان" }, w.city.ifBlank { "اهواز" }, parts.size.toString()))
+            rows.add(listOf())
 
             // فهرست خلاصه برای کنترل داده
-            rows += listOf("فهرست شرکت‌کنندگان (از شیت مشخصات)")
-            rows += listOf("نام و نام خانوادگی", "تاریخ تولد", "مدرک تحصیلی", "کد ملی", "شماره تماس")
+            rows.add(listOf("فهرست شرکت‌کنندگان (از شیت مشخصات)"))
+            rows.add(listOf("نام و نام خانوادگی", "تاریخ تولد", "مدرک تحصیلی", "کد ملی", "شماره تماس"))
             val listHeader = rows.size
             parts.forEach { p ->
-                rows += listOf(p.fullName, p.birthDateText, p.education, p.nationalId, p.phone)
+                rows.add(listOf(p.fullName, p.birthDateText, p.education, p.nationalId, p.phone))
             }
 
             return XlsxWriter.Sheet(
@@ -238,18 +258,20 @@ object WorkshopExcelExporter {
     private fun sheetOtherActions(w: Workshop): XlsxWriter.Sheet {
         val kind = courseLabel(w)
         val rows = mutableListOf<List<String>>()
-        rows += listOf("سایر اقدامات انجام‌شده در خصوص دوره آموزش $kind")
-        rows += listOf(
-            "استان", w.province,
-            "مرکز", w.centerName,
-            "عنوان دوره", w.title,
-            "تاریخ", JalaliDate.formatDate(w.dateMillis)
+        rows.add(listOf("سایر اقدامات انجام‌شده در خصوص دوره آموزش $kind"))
+        rows.add(
+            listOf(
+                "استان", w.province,
+                "مرکز", w.centerName,
+                "عنوان دوره", w.title,
+                "تاریخ", JalaliDate.formatDate(w.dateMillis)
+            )
         )
-        rows += listOf()
-        rows += listOf("عنوان اقدام", "تعداد", "موضوع و محتوا", "شرح اقدام")
+        rows.add(listOf())
+        rows.add(listOf("عنوان اقدام", "تعداد", "موضوع و محتوا", "شرح اقدام"))
         val h = rows.size
         repeat(15) {
-            rows += listOf("", "", "", "")
+            rows.add(listOf("", "", "", ""))
         }
         return XlsxWriter.Sheet(
             name = "سایر اقدامات آموزشی",
@@ -264,25 +286,31 @@ object WorkshopExcelExporter {
     // ═══════════════════════════════════════════════════════════
     private fun sheetSurvey16(w: Workshop): XlsxWriter.Sheet {
         val rows = mutableListOf<List<String>>()
-        rows += listOf("فرم نظرسنجی کارگاه مخاطب اصلی آموزش ${courseLabel(w)} (ویژه دوره‌های ۱۶ ساعته)")
-        rows += listOf(
-            "نام استان", w.province.ifBlank { "خوزستان" },
-            "عنوان دوره", w.title,
-            "تاریخ برگزاری", JalaliDate.formatDate(w.dateMillis)
+        rows.add(listOf("فرم نظرسنجی کارگاه مخاطب اصلی آموزش ${courseLabel(w)} (ویژه دوره‌های ۱۶ ساعته)"))
+        rows.add(
+            listOf(
+                "نام استان", w.province.ifBlank { "خوزستان" },
+                "عنوان دوره", w.title,
+                "تاریخ برگزاری", JalaliDate.formatDate(w.dateMillis)
+            )
         )
-        rows += listOf(
-            "نام مدرس", w.trainerName,
-            "تحصیلات", "",
-            "جنسیت", ""
+        rows.add(
+            listOf(
+                "نام مدرس", w.trainerName,
+                "تحصیلات", "",
+                "جنسیت", ""
+            )
         )
-        rows += listOf()
-        rows += listOf(
-            "محورها",
-            "سؤالات",
-            "کاملاً مخالفم",
-            "مخالفم",
-            "نظری ندارم",
-            "موافقم"
+        rows.add(listOf())
+        rows.add(
+            listOf(
+                "محورها",
+                "سؤالات",
+                "کاملاً مخالفم",
+                "مخالفم",
+                "نظری ندارم",
+                "موافقم"
+            )
         )
         val headerRow = rows.size
 
@@ -316,12 +344,12 @@ object WorkshopExcelExporter {
             "نتایج کارگاه" to "کارگاه روش خوبی برای یادگیری محتوا بود."
         )
         items.forEach { (axis, q) ->
-            rows += listOf(axis, q, "", "", "", "")
+            rows.add(listOf(axis, q, "", "", "", ""))
         }
-        rows += listOf()
-        rows += listOf("پیشنهاد شما برای برگزاری بهتر کارگاه‌های آموزشی چیست؟")
-        rows += listOf("", "", "", "", "", "")
-        rows += listOf("", "", "", "", "", "")
+        rows.add(listOf())
+        rows.add(listOf("پیشنهاد شما برای برگزاری بهتر کارگاه‌های آموزشی چیست؟"))
+        rows.add(listOf("", "", "", "", "", ""))
+        rows.add(listOf("", "", "", "", "", ""))
 
         return XlsxWriter.Sheet(
             name = "فرم نظرسنجی ۱۶ ساعته",
@@ -336,25 +364,31 @@ object WorkshopExcelExporter {
     // ═══════════════════════════════════════════════════════════
     private fun sheetSurvey4(w: Workshop): XlsxWriter.Sheet {
         val rows = mutableListOf<List<String>>()
-        rows += listOf("فرم نظرسنجی کارگاه مخاطب اصلی آموزش ${courseLabel(w)} (ویژه دوره‌های ۴ ساعته)")
-        rows += listOf(
-            "نام استان", w.province.ifBlank { "خوزستان" },
-            "عنوان دوره", w.title,
-            "تاریخ برگزاری", JalaliDate.formatDate(w.dateMillis)
+        rows.add(listOf("فرم نظرسنجی کارگاه مخاطب اصلی آموزش ${courseLabel(w)} (ویژه دوره‌های ۴ ساعته)"))
+        rows.add(
+            listOf(
+                "نام استان", w.province.ifBlank { "خوزستان" },
+                "عنوان دوره", w.title,
+                "تاریخ برگزاری", JalaliDate.formatDate(w.dateMillis)
+            )
         )
-        rows += listOf(
-            "نام مدرس", w.trainerName,
-            "تحصیلات", "",
-            "جنسیت", ""
+        rows.add(
+            listOf(
+                "نام مدرس", w.trainerName,
+                "تحصیلات", "",
+                "جنسیت", ""
+            )
         )
-        rows += listOf()
-        rows += listOf(
-            "محورها",
-            "سؤالات",
-            "کاملاً مخالفم",
-            "مخالفم",
-            "نظری ندارم",
-            "موافقم"
+        rows.add(listOf())
+        rows.add(
+            listOf(
+                "محورها",
+                "سؤالات",
+                "کاملاً مخالفم",
+                "مخالفم",
+                "نظری ندارم",
+                "موافقم"
+            )
         )
         val headerRow = rows.size
 
@@ -377,12 +411,12 @@ object WorkshopExcelExporter {
             "نتیجه کارگاه" to "این کارگاه روش خوبی برای یادگیری محتوا بود."
         )
         items.forEach { (axis, q) ->
-            rows += listOf(axis, q, "", "", "", "")
+            rows.add(listOf(axis, q, "", "", "", ""))
         }
-        rows += listOf()
-        rows += listOf("پیشنهاد شما برای برگزاری بهتر کارگاه‌های آموزشی چیست؟")
-        rows += listOf("", "", "", "", "", "")
-        rows += listOf("", "", "", "", "", "")
+        rows.add(listOf())
+        rows.add(listOf("پیشنهاد شما برای برگزاری بهتر کارگاه‌های آموزشی چیست؟"))
+        rows.add(listOf("", "", "", "", "", ""))
+        rows.add(listOf("", "", "", "", "", ""))
 
         return XlsxWriter.Sheet(
             name = "فرم نظرسنجی ۴ ساعته",
