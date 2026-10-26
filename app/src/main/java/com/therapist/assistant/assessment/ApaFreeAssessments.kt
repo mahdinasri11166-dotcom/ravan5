@@ -331,33 +331,45 @@ object ApaFreeAssessments {
         )
     )
 
-    fun facetSummary(id: String, answers: List<Int>): String = when (id) {
-        "PCL5" -> {
-            if (answers.size < 20) return ""
-            val b = answers.subList(0, 5).sum()
-            val c = answers.subList(5, 7).sum()
-            val d = answers.subList(7, 14).sum()
-            val e = answers.subList(14, 20).sum()
-            "B-مزاحمت=$b C-اجتناب=$c D-شناخت‌خلق=$d E-انگیختگی=$e"
+    fun facetSummary(id: String, answers: List<Int>): String {
+        return when (id) {
+            "PCL5" -> {
+                if (answers.size < 20) ""
+                else {
+                    val b = answers.subList(0, 5).sum()
+                    val c = answers.subList(5, 7).sum()
+                    val d = answers.subList(7, 14).sum()
+                    val e = answers.subList(14, 20).sum()
+                    "B-مزاحمت=$b C-اجتناب=$c D-شناخت‌خلق=$d E-انگیختگی=$e"
+                }
+            }
+            "AUDIT10" -> {
+                if (answers.size < 10) ""
+                else {
+                    "مصرف=${answers.subList(0, 3).sum()} وابستگی=${answers.subList(3, 6).sum()} آسیب=${answers.subList(6, 10).sum()}"
+                }
+            }
+            "BIS11" -> {
+                if (answers.size < 30) ""
+                else {
+                    // approximate thirds
+                    "بخش۱=${answers.subList(0, 10).sum()} بخش۲=${answers.subList(10, 20).sum()} بخش۳=${answers.subList(20, 30).sum()}"
+                }
+            }
+            "ASRS18" -> {
+                if (answers.size < 18) ""
+                else {
+                    "بی‌توجهی≈${answers.subList(0, 9).sum()} بیش‌فعالی/تکانش≈${answers.subList(9, 18).sum()}"
+                }
+            }
+            "DSM5_CC_L1" -> {
+                if (answers.isEmpty()) ""
+                else {
+                    val hot = answers.mapIndexed { i, v -> i to v }.filter { it.second >= 2 }
+                    "حیطه‌های ≥۲: ${hot.size} مورد از ${answers.size}"
+                }
+            }
+            else -> ""
         }
-        "AUDIT10" -> {
-            if (answers.size < 10) return ""
-            "مصرف=${answers.subList(0, 3).sum()} وابستگی=${answers.subList(3, 6).sum()} آسیب=${answers.subList(6, 10).sum()}"
-        }
-        "BIS11" -> {
-            if (answers.size < 30) return ""
-            // approximate thirds
-            "بخش۱=${answers.subList(0, 10).sum()} بخش۲=${answers.subList(10, 20).sum()} بخش۳=${answers.subList(20, 30).sum()}"
-        }
-        "ASRS18" -> {
-            if (answers.size < 18) return ""
-            "بی‌توجهی≈${answers.subList(0, 9).sum()} بیش‌فعالی/تکانش≈${answers.subList(9, 18).sum()}"
-        }
-        "DSM5_CC_L1" -> {
-            if (answers.isEmpty()) return ""
-            val hot = answers.mapIndexed { i, v -> i to v }.filter { it.second >= 2 }
-            "حیطه‌های ≥۲: ${hot.size} مورد از ${answers.size}"
-        }
-        else -> ""
     }
 }
