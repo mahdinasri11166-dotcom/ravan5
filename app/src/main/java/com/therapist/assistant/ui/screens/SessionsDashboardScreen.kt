@@ -65,7 +65,7 @@ fun SessionsDashboardScreen(
         }.timeInMillis
     }
     val dayEnd = dayStart + 24L * 60 * 60 * 1000
-    val weekEnd = dayStart + TRIAL_DAYS * 24L * 60 * 60 * 1000
+    val weekEnd = dayStart + 7 * 24L * 60 * 60 * 1000  // 👈 TRIAL_DAYS با 7 جایگزین شد
     val monthStart = remember {
         Calendar.getInstance().apply {
             set(Calendar.DAY_OF_MONTH, 1)
