@@ -253,7 +253,6 @@ object MoodAnxietyAssessments {
             },
             tags = "مانیا دوقطبی ASRM"
         ),
-        ,
 
         AssessmentDef(
             id = "OCI18",
@@ -317,7 +316,6 @@ object MoodAnxietyAssessments {
             },
             tags = "وحشت پانیک اضطراب PDSS"
         ),
-        ,
 
         AssessmentDef(
             id = "K6",
