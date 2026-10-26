@@ -352,9 +352,6 @@ object ExtendedAssessments {
             tags = "IPIP شخصیت BigFive پنج‌عاملی عمومی بلند Goldberg"
         ),
 
-        // ——— PANAS-X style expanded affect 60 would be long - use PANAS 20 is short
-        // Add ASI-3 is 18. Add SPS/SIAS combo...
-
         // ——— Brief Symptom-style free alternative: use CORE-OM 34 if known free
         AssessmentDef(
             id = "COREOM34",
@@ -420,39 +417,51 @@ object ExtendedAssessments {
         )
     )
 
-    fun facetSummary(id: String, answers: List<Int>): String = when (id) {
-        "WHODAS36" -> {
-            if (answers.size < 36) return ""
-            fun sum(a: Int, b: Int) = answers.subList(a, b).sum()
-            "شناخت=${sum(0,6)} تحرک=${sum(6,11)} مراقبت‌خود=${sum(11,15)} تعامل=${sum(15,20)} فعالیت‌زندگی=${sum(20,26)} مشارکت=${sum(26,36)}"
+    fun facetSummary(id: String, answers: List<Int>): String {
+        return when (id) {
+            "WHODAS36" -> {
+                if (answers.size < 36) ""
+                else {
+                    fun sum(a: Int, b: Int) = answers.subList(a, b).sum()
+                    "شناخت=${sum(0, 6)} تحرک=${sum(6, 11)} مراقبت‌خود=${sum(11, 15)} تعامل=${sum(15, 20)} فعالیت‌زندگی=${sum(20, 26)} مشارکت=${sum(26, 36)}"
+                }
+            }
+            "LSAS48" -> {
+                if (answers.size < 48) ""
+                else {
+                    val fear = answers.subList(0, 24).sum()
+                    val avoid = answers.subList(24, 48).sum()
+                    "ترس=$fear اجتناب=$avoid کل=${fear + avoid}"
+                }
+            }
+            "COPE60" -> {
+                if (answers.size < 60) ""
+                else {
+                    fun sc(i: Int) = answers.subList(i * 4, i * 4 + 4).sum()
+                    val names = listOf(
+                        "مقابله‌فعال", "برنامه‌ریزی", "سرکوب‌رقابت", "خویشتن‌داری",
+                        "حمایت‌ابزاری", "حمایت‌عاطفی", "بازتفسیرمثبت", "پذیرش",
+                        "مذهب", "برون‌ریزی", "انکار", "قطع‌رفتاری",
+                        "قطع‌ذهنی", "مواد", "شوخ‌طبعی"
+                    )
+                    names.mapIndexed { i, n -> "$n=${sc(i)}" }.joinToString(" ")
+                }
+            }
+            "IPIP50" -> {
+                if (answers.size < 50) ""
+                else {
+                    fun sum(a: Int, b: Int) = answers.subList(a, b).sum()
+                    "برون‌گرایی=${sum(0, 10)} توافق=${sum(10, 20)} وظیفه‌شناسی=${sum(20, 30)} روان‌رنجوری=${sum(30, 40)} گشودگی=${sum(40, 50)}"
+                }
+            }
+            "COREOM34" -> {
+                if (answers.size < 34) ""
+                else {
+                    // rough domain split used in CORE: wellbeing, problems, functioning, risk - approximate index groups
+                    "کل=${answers.sum()} میانگین=${"%.2f".format(answers.sum() / 34.0)}"
+                }
+            }
+            else -> ""
         }
-        "LSAS48" -> {
-            if (answers.size < 48) return ""
-            val fear = answers.subList(0, 24).sum()
-            val avoid = answers.subList(24, 48).sum()
-            "ترس=$fear اجتناب=$avoid کل=${fear + avoid}"
-        }
-        "COPE60" -> {
-            if (answers.size < 60) return ""
-            fun sc(i: Int) = answers.subList(i * 4, i * 4 + 4).sum()
-            val names = listOf(
-                "مقابله‌فعال", "برنامه‌ریزی", "سرکوب‌رقابت", "خویشتن‌داری",
-                "حمایت‌ابزاری", "حمایت‌عاطفی", "بازتفسیرمثبت", "پذیرش",
-                "مذهب", "برون‌ریزی", "انکار", "قطع‌رفتاری",
-                "قطع‌ذهنی", "مواد", "شوخ‌طبعی"
-            )
-            names.mapIndexed { i, n -> "$n=${sc(i)}" }.joinToString(" ")
-        }
-        "IPIP50" -> {
-            if (answers.size < 50) return ""
-            fun sum(a: Int, b: Int) = answers.subList(a, b).sum()
-            "برون‌گرایی=${sum(0,10)} توافق=${sum(10,20)} وظیفه‌شناسی=${sum(20,30)} روان‌رنجوری=${sum(30,40)} گشودگی=${sum(40,50)}"
-        }
-        "COREOM34" -> {
-            if (answers.size < 34) return ""
-            // rough domain split used in CORE: wellbeing, problems, functioning, risk - approximate index groups
-            "کل=${answers.sum()} میانگین=${"%.2f".format(answers.sum() / 34.0)}"
-        }
-        else -> ""
     }
 }
