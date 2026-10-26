@@ -141,29 +141,35 @@ object ClinicalFreeAssessments {
         )
     )
 
-    fun facetSummary(id: String, answers: List<Int>): String = when (id) {
-        "CERQ18" -> {
-            if (answers.size < 18) return ""
-            fun sum2(a: Int) = answers[a] + answers[a + 1]
-            "ملامت‌خویش=${sum2(0)} پذیرش=${sum2(2)} نشخوار=${sum2(4)} " +
-                "تمرکز‌مثبت=${sum2(6)} برنامه‌ریزی=${sum2(8)} ارزیابی‌مجدد=${sum2(10)} " +
-                "دیدگاه‌گیری=${sum2(12)} فاجعه‌سازی=${sum2(14)} ملامت‌دیگران=${sum2(16)}"
+    fun facetSummary(id: String, answers: List<Int>): String {
+        return when (id) {
+            "CERQ18" -> {
+                if (answers.size < 18) ""
+                else {
+                    fun sum2(a: Int) = answers[a] + answers[a + 1]
+                    "ملامت‌خویش=${sum2(0)} پذیرش=${sum2(2)} نشخوار=${sum2(4)} " +
+                        "تمرکز‌مثبت=${sum2(6)} برنامه‌ریزی=${sum2(8)} ارزیابی‌مجدد=${sum2(10)} " +
+                        "دیدگاه‌گیری=${sum2(12)} فاجعه‌سازی=${sum2(14)} ملامت‌دیگران=${sum2(16)}"
+                }
+            }
+            "HOLLAND60" -> {
+                if (answers.size < 60) ""
+                else {
+                    fun sum10(from: Int) = answers.subList(from, from + 10).sum()
+                    val scores = listOf(
+                        "R" to sum10(0),
+                        "I" to sum10(10),
+                        "A" to sum10(20),
+                        "S" to sum10(30),
+                        "E" to sum10(40),
+                        "C" to sum10(50)
+                    )
+                    val top = scores.sortedByDescending { it.second }.take(3).joinToString("") { it.first }
+                    val detail = scores.joinToString(" ") { "${it.first}=${it.second}" }
+                    "کد=$top | $detail"
+                }
+            }
+            else -> ""
         }
-        "HOLLAND60" -> {
-            if (answers.size < 60) return ""
-            fun sum10(from: Int) = answers.subList(from, from + 10).sum()
-            val scores = listOf(
-                "R" to sum10(0),
-                "I" to sum10(10),
-                "A" to sum10(20),
-                "S" to sum10(30),
-                "E" to sum10(40),
-                "C" to sum10(50)
-            )
-            val top = scores.sortedByDescending { it.second }.take(3).joinToString("") { it.first }
-            val detail = scores.joinToString(" ") { "${it.first}=${it.second}" }
-            "کد=$top | $detail"
-        }
-        else -> ""
     }
 }
